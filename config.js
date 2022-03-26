@@ -12,8 +12,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
+const Dishes = db.collection("dishes");
+const Tables = db.collection("tables");
+const Bills = db.collection("bills");
+const Waiters = db.collection("bills");
 
-const Users = db.collection("users");
-const Desks = db.collection("desks");
-
-module.exports = {Users, Desks};
+module.exports = { Dishes, Waiters, Tables, Bills };
