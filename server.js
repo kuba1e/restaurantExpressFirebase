@@ -78,11 +78,10 @@ app.get("/bills", async (req, res) => {
 });
 
 
-app.post("/create", async (req, res) => {
+app.post("/tables", async (req, res) => {
   try {
     const data = req.body;
-    await Users.add(data);
-    await Desks.add(data);
+    await Tables.add(data);
 
     res.send({ sended: "succesefull" });
   } catch (error) {
