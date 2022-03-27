@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const multer = require("multer");
 const { Dishes, Waiters, Tables, Bills } = require("./config");
 const PORT = process.env.PORT || 3000;
 
