@@ -198,4 +198,16 @@ app.delete("/bills/:id", async (req, res) => {
   }
 });
 
+app.delete("/tables/:id", async (req, res) => {
+  try {
+    const data = req.body;
+    const id = req.params.id;
+    await Tables.doc(id).delete();
+
+    res.send({ deleted: "succesefull" });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.listen(PORT);

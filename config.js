@@ -18,3 +18,6 @@ const Bills = db.collection("bills");
 const Waiters = db.collection("bills");
 
 module.exports = { Dishes, Waiters, Tables, Bills };
+
+
+
