@@ -77,8 +77,6 @@ app.post("/tables", upload.single("table-image"), async (req, res) => {
       const imageRes = await cloudinary.uploader.upload(req.file.path);
       data.img = imageRes.secure_url;
       data.imgId = imageRes.public_id;
-    } else {
-      data.img=''
     }
     await Tables.add(data);
     res.send({ sended: "succesefull" });
@@ -93,8 +91,6 @@ app.post("/dishes", upload.single("dish-image"), async (req, res) => {
     if (req.file) {
       const imageRes = await cloudinary.uploader.upload(req.file.path);
       data.img = imageRes.secure_url;
-    } else {
-      data.img=''
     }
     await Dishes.add(data);
 
@@ -109,8 +105,6 @@ app.post("/waiters", upload.single("waiter-photo"), async (req, res) => {
     if (req.file) {
       const imageRes = await cloudinary.uploader.upload(req.file.path);
       data.img = imageRes.secure_url;
-    }else {
-      data.img=''
     }
     await Waiters.add(data);
 
@@ -130,7 +124,7 @@ app.post("/bills", async (req, res) => {
   }
 });
 
-app.put("/dishes/:id",  upload.single('dish-image'), async (req, res) => {
+app.put("/dishes/:id", upload.single("dish-image"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
@@ -148,7 +142,7 @@ app.put("/dishes/:id",  upload.single('dish-image'), async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
-app.put("/waiters/:id", upload.single('waiter-photo'), async (req, res) => {
+app.put("/waiters/:id", upload.single("waiter-photo"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
