@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-const multer = require("multer");
+const upload = require("./utils/multer");
+const cloudinary = require("./utils/cloudinary");
 const { Dishes, Waiters, Tables, Bills } = require("./config");
 const PORT = process.env.PORT || 3000;
 
@@ -69,35 +70,53 @@ app.get("/bills", async (req, res) => {
   }
 });
 
-app.post("/tables", async (req, res) => {
+app.post("/tables", upload.single("table-image"), async (req, res) => {
   try {
     const data = req.body;
+    if (req.file) {
+      const imageRes = await cloudinary.uploader.upload(req.file.path);
+      data.img = imageRes.secure_url;
+      data.imgId = imageRes.public_id;
+    } else {
+      data.img=''
+    }
     await Tables.add(data);
-
     res.send({ sended: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
-app.post("/dishes", async (req, res) => {
+app.post("/dishes", upload.single("dish-image"), async (req, res) => {
   try {
     const data = req.body;
+    if (req.file) {
+      const imageRes = await cloudinary.uploader.upload(req.file.path);
+      data.img = imageRes.secure_url;
+    } else {
+      data.img=''
+    }
     await Dishes.add(data);
 
     res.send({ sended: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
-app.post("/waiters", async (req, res) => {
+app.post("/waiters", upload.single("waiter-photo"), async (req, res) => {
   try {
     const data = req.body;
+    if (req.file) {
+      const imageRes = await cloudinary.uploader.upload(req.file.path);
+      data.img = imageRes.secure_url;
+    }else {
+      data.img=''
+    }
     await Waiters.add(data);
 
     res.send({ sended: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 app.post("/bills", async (req, res) => {
@@ -107,13 +126,18 @@ app.post("/bills", async (req, res) => {
 
     res.send({ sended: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
-app.put("/dishes/:id", async (req, res) => {
+app.put("/dishes/:id",  upload.single('dish-image'), async (req, res) => {
   try {
     const data = req.body;
+    if (req.file) {
+      await cloudinary.uploader.destroy(req.body.imgId);
+      const imageRes = await cloudinary.uploader.upload(req.file.path);
+      data.img = imageRes.secure_url;
+    }
     const id = req.params.id;
     await Dishes.doc(id).update({
       ...data,
@@ -121,12 +145,17 @@ app.put("/dishes/:id", async (req, res) => {
 
     res.send({ updated: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
-app.put("/waiters/:id", async (req, res) => {
+app.put("/waiters/:id", upload.single('waiter-photo'), async (req, res) => {
   try {
     const data = req.body;
+    if (req.file) {
+      await cloudinary.uploader.destroy(req.body.imgId);
+      const imageRes = await cloudinary.uploader.upload(req.file.path);
+      data.img = imageRes.secure_url;
+    }
     const id = req.params.id;
     await Waiters.doc(id).update({
       ...data,
@@ -134,7 +163,7 @@ app.put("/waiters/:id", async (req, res) => {
 
     res.send({ updated: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 app.put("/bills/:id", async (req, res) => {
@@ -147,13 +176,18 @@ app.put("/bills/:id", async (req, res) => {
 
     res.send({ updated: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
-app.put("/tables/:id", async (req, res) => {
+app.put("/tables/:id", upload.single("table-image"), async (req, res) => {
   try {
     const data = req.body;
+    if (req.file) {
+      await cloudinary.uploader.destroy(req.body.imgId);
+      const imageRes = await cloudinary.uploader.upload(req.file.path);
+      data.img = imageRes.secure_url;
+    }
     const id = req.params.id;
     await Tables.doc(id).update({
       ...data,
@@ -161,30 +195,34 @@ app.put("/tables/:id", async (req, res) => {
 
     res.send({ updated: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
 app.delete("/dishes/:id", async (req, res) => {
   try {
     const data = req.body;
+    await cloudinary.uploader.destroy(req.body.imgId);
+
     const id = req.params.id;
     await Dishes.doc(id).delete();
 
     res.send({ deleted: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 app.delete("/waiters/:id", async (req, res) => {
   try {
     const data = req.body;
+    await cloudinary.uploader.destroy(req.body.imgId);
+
     const id = req.params.id;
     await Waiters.doc(id).delete();
 
     res.send({ deleted: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 app.delete("/bills/:id", async (req, res) => {
@@ -195,19 +233,20 @@ app.delete("/bills/:id", async (req, res) => {
 
     res.send({ deleted: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
 app.delete("/tables/:id", async (req, res) => {
   try {
     const data = req.body;
+    await cloudinary.uploader.destroy(req.body.imgId);
     const id = req.params.id;
     await Tables.doc(id).delete();
 
     res.send({ deleted: "succesefull" });
   } catch (error) {
-    console.log(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
