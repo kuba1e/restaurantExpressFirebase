@@ -70,7 +70,7 @@ app.get("/bills", async (req, res) => {
   }
 });
 
-app.post("/tables", upload.single("table-image"), async (req, res) => {
+app.post("/tables", upload.single("tableImage"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
@@ -85,7 +85,7 @@ app.post("/tables", upload.single("table-image"), async (req, res) => {
   }
 });
 
-app.post("/dishes", upload.single("dish-image"), async (req, res) => {
+app.post("/dishes", upload.single("dishImage"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
@@ -99,7 +99,7 @@ app.post("/dishes", upload.single("dish-image"), async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
-app.post("/waiters", upload.single("waiter-photo"), async (req, res) => {
+app.post("/waiters", upload.single("waiterPhoto"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
@@ -124,7 +124,7 @@ app.post("/bills", async (req, res) => {
   }
 });
 
-app.put("/dishes/:id", upload.single("dish-image"), async (req, res) => {
+app.put("/dishes/:id", upload.single("dishImage"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
@@ -142,7 +142,7 @@ app.put("/dishes/:id", upload.single("dish-image"), async (req, res) => {
     res.status(400).send({ error: error.message });
   }
 });
-app.put("/waiters/:id", upload.single("waiter-photo"), async (req, res) => {
+app.put("/waiters/:id", upload.single("waiterPhoto"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
@@ -174,7 +174,7 @@ app.put("/bills/:id", async (req, res) => {
   }
 });
 
-app.put("/tables/:id", upload.single("table-image"), async (req, res) => {
+app.put("/tables/:id", upload.single("tableImage"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
