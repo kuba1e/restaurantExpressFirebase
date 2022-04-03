@@ -79,9 +79,9 @@ app.post("/tables", upload.single("tableImage"), async (req, res) => {
       data.imgId = imageRes.public_id;
     }
     await Tables.add(data);
-    res.send({ sended: "succesefull" });
+    res.status(200).send({ sended: "succesefull", ok: true });
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    res.status(400).send({ error: error.message, ok:false });
   }
 });
 
@@ -178,16 +178,19 @@ app.put("/tables/:id", upload.single("tableImage"), async (req, res) => {
   try {
     const data = req.body;
     if (req.file) {
-      await cloudinary.uploader.destroy(req.body.imgId);
+      if(req.body.public_id){
+        await cloudinary.uploader.destroy(req.body.imgId);
+      }
       const imageRes = await cloudinary.uploader.upload(req.file.path);
       data.img = imageRes.secure_url;
+      data.imgId = imageRes.public_id;
     }
     const id = req.params.id;
     await Tables.doc(id).update({
       ...data,
     });
 
-    res.send({ updated: "succesefull" });
+    res.send({ updated: "succesefull", ok:true });
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
@@ -234,11 +237,12 @@ app.delete("/bills/:id", async (req, res) => {
 app.delete("/tables/:id", async (req, res) => {
   try {
     const data = req.body;
-    await cloudinary.uploader.destroy(req.body.imgId);
+    console.log(data)
+    await cloudinary.uploader.destroy(data.imgId);
     const id = req.params.id;
     await Tables.doc(id).delete();
 
-    res.send({ deleted: "succesefull" });
+    res.send({ deleted: "succesefull", ok:true });
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
